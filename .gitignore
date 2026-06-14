@@ -1,7 +1,9 @@
-# Compiled binaries
+# Compiled binaries and build folders
 farmacia_parallel
+obj/
 
-# Downloaded/generated CSV files
+# Downloaded/generated data
+data/
 *.csv
 
 # Program outputs / logs
@@ -14,3 +16,8 @@ log.txt
 
 # OS generated files
 .DS_Store
+
+# Ignored project resources
+main-old.cpp
+BITACORA.md
+
