@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cstdio>
 #include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -66,6 +67,10 @@ vector<Transaction> parse_csv_file(const string &csv_file_path)
         {
             current_line.pop_back();
         }
+        if (current_line.empty())
+        {
+            continue;
+        }
 
         row_columns.clear();
         line_stream.clear();
@@ -104,7 +109,12 @@ vector<Transaction> parse_csv_file(const string &csv_file_path)
 
         try
         {
-            amount_float = stof(amount_cell);
+            size_t parsed_chars = 0;
+            amount_float = stof(amount_cell, &parsed_chars);
+            if (parsed_chars != amount_cell.size())
+            {
+                throw invalid_argument("caracteres sobrantes: '" + amount_cell + "'");
+            }
             parsed_transactions.push_back({uuid_cell, amount_float});
         }
         catch (const exception &conversion_exception)
@@ -115,6 +125,15 @@ vector<Transaction> parse_csv_file(const string &csv_file_path)
                 fflush(log_file);
             }
             return vector<Transaction>();
+        }
+    }
+
+    if (parsed_transactions.empty())
+    {
+        #pragma omp critical(log_write)
+        {
+            fprintf(log_file, "Warning: %s header OK pero 0 filas de datos\n", csv_file_path.c_str());
+            fflush(log_file);
         }
     }
 

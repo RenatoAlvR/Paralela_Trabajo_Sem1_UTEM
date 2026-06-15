@@ -6,9 +6,6 @@ obj/
 data/
 *.csv
 
-# Program outputs / logs
-resultados.txt
-log.txt
 
 # C++ object and build files
 *.o
